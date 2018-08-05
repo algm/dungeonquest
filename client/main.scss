@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css?family=Alegreya+Sans|Cuprum");
+
+$primary: #c1772e;
+$secondary: #c72839;
+$success: #284471;
+$gray-300: #dee2e6;
+$info: $gray-300;
+$enable-shadows: false;
+$enable-rounded: false;
+$enable-gradients: false;
+$border-width: 1px;
+$font-family-sans-serif: -apple-system, "Alegreya Sans", BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol;
+$headings-font-family: -apple-system, "Cuprum", BlinkMacSystemFont, Segoe UI,
+    Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji,
+    Segoe UI Symbol;
+
+@import "{}/imports/nodemodules/bootstrap/scss/bootstrap.scss";
+
+.viewport {
+    width: 100wh;
+    height: 100vh;
+}
+
+.brand-logo {
+    max-height: 40px;
+}
+
+.room-page {
+    display: grid;
+    height: calc(100vh - 66px);
+    grid-template-columns: 0.5fr 1.5fr;
+    grid-template-rows: 56px 2.3fr;
+    grid-template-areas: "title title" "messages ui";
+
+    .title {
+        grid-area: title;
+        padding: 0 1rem;
+    }
+    .messages {
+        grid-area: messages;
+        display: grid;
+        height: calc(100vh - 56px - 66px);
+        grid-template-columns: 1fr;
+        grid-template-rows: auto-fit 38px;
+        grid-template-areas: "received-messages" "messagebox";
+
+        .messagebox {
+            grid-area: messagebox;
+        }
+
+        .received-messages {
+            margin: 0;
+            overflow: auto;
+            font-size: .8rem;
+            grid-area: received-messages;
+            font-family: $font-family-monospace;
+            padding: 0 1rem;
+        }
+    }
+}
