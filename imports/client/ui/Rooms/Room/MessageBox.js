@@ -1,22 +1,23 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import { withTracker } from 'meteor/react-meteor-data';
 import {
     Form,
     FormGroup,
     Input,
     Button,
     InputGroupAddon,
-    InputGroup
-} from "reactstrap";
-import { Meteor } from "meteor/meteor";
+    InputGroup,
+} from 'reactstrap';
+import { Meteor } from 'meteor/meteor';
 
-export default class MessageBox extends Component {
+class MessageBox extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            message: "",
+            message: '',
             submitting: false,
-            inserted: null
+            inserted: null,
         };
     }
 
@@ -25,15 +26,15 @@ export default class MessageBox extends Component {
 
         this.setState({ submitting: true });
         let { message } = this.state;
-        let { room } = this.props;
+        let { room, activeUser } = this.props;
 
-        await Meteor.call("room.chat", {
+        await Meteor.callPromise('room.chat', {
             id: room,
-            userId: Session.get("userId"),
-            message
+            userId: activeUser._id,
+            message,
         });
 
-        this.setState({ message: "" });
+        this.setState({ message: '' });
 
         setTimeout(() => {
             this.setState({ submitting: false });
@@ -61,13 +62,15 @@ export default class MessageBox extends Component {
                                 placeholder="Type a message here"
                                 onChange={this.onChange.bind(this)}
                                 value={this.state.message}
+                                autoComplete="off"
+                                autoFocus
                             />
                             <InputGroupAddon addonType="append">
                                 <Button
                                     color="primary"
                                     onClick={this.handleSubmit.bind(this)}
                                     disabled={
-                                        this.state.message === "" ||
+                                        this.state.message === '' ||
                                         this.state.submitting
                                     }
                                 >
@@ -81,3 +84,8 @@ export default class MessageBox extends Component {
         );
     }
 }
+export default withTracker(() => {
+    Meteor.subscribe('rooms');
+
+    return {};
+})(MessageBox);

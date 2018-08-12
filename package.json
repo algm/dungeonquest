@@ -20,6 +20,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "reactstrap": "^6.3.1",
+    "simpl-schema": "^1.5.3",
     "uniqid": "^5.0.3"
   },
   "meteor": {
@@ -28,5 +29,8 @@
       "server": "server/main.js"
     },
     "testModule": "tests/main.js"
+  },
+  "devDependencies": {
+    "eslint-plugin-prettier": "^2.6.2"
   }
 }

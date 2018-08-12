@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import Message from "./Message";
-import MessageBox from "./MessageBox";
+import React, { Component } from 'react';
+import Message from './Message';
+import MessageBox from './MessageBox';
 
 export default class Messages extends Component {
     componentDidMount() {
@@ -16,11 +16,11 @@ export default class Messages extends Component {
     }
 
     scrollToBottom = () => {
-        this.bottomElement.scrollIntoView({ behavior: "smooth" });
+        this.bottomElement.scrollIntoView({ behavior: 'smooth' });
     };
 
     render() {
-        let { messages, roomId } = this.props;
+        let { messages, roomId, activeUser } = this.props;
         let rendered = null;
 
         if (messages) {
@@ -30,6 +30,7 @@ export default class Messages extends Component {
         return (
             <div className="messages">
                 <div className="received-messages">
+                    <p className="text-muted">Room created</p>
                     {rendered}
                     <div
                         className="bottom mt-1"
@@ -38,7 +39,7 @@ export default class Messages extends Component {
                         }}
                     />
                 </div>
-                <MessageBox room={roomId} />
+                <MessageBox activeUser={activeUser} room={roomId} />
             </div>
         );
     }

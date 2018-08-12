@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PureComponent } from 'react';
 import {
     Collapse,
     Navbar,
@@ -11,23 +11,23 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    Container
-} from "reactstrap";
-import { Link } from "react-router-dom";
-import AccountsUIWrapper from "./Accounts/AccountsUIWrapper.js";
+    Container,
+} from 'reactstrap';
+import { Link } from 'react-router-dom';
+import AccountsUIWrapper from './Accounts/AccountsUIWrapper';
 
-export default class AppBar extends React.Component {
+export default class AppBar extends PureComponent {
     constructor(props) {
         super(props);
 
         this.toggle = this.toggle.bind(this);
         this.state = {
-            isOpen: false
+            isOpen: false,
         };
     }
     toggle() {
         this.setState({
-            isOpen: !this.state.isOpen
+            isOpen: !this.state.isOpen,
         });
     }
     render() {
@@ -40,13 +40,9 @@ export default class AppBar extends React.Component {
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink tag={Link} to="/newgame">
-                                    New game
-                                </NavLink>
+                            <NavItem className="pt-1 pl-2">
+                                <AccountsUIWrapper />
                             </NavItem>
-
-                            <AccountsUIWrapper />
                         </Nav>
                     </Collapse>
                 </Container>

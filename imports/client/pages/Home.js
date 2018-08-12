@@ -1,6 +1,6 @@
-import React from "react";
-import { Container } from "reactstrap";
-import RoomList from "../ui/Rooms/List";
+import React from 'react';
+import { Container } from 'reactstrap';
+import RoomList from '../ui/Rooms/List';
 
 const Home = () => (
     <Container className="page-home">

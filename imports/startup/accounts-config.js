@@ -1,8 +1,11 @@
-import { Accounts } from "meteor/accounts-base";
+import { Accounts } from 'meteor/accounts-base';
 
-/*Accounts.config({
-});*/
-
-Accounts.ui.config({
-    passwordSignupFields: "USERNAME_ONLY"
+Accounts.config({
+    forbidClientAccountCreation: false,
 });
+
+if (Meteor.isClient) {
+    Accounts.ui.config({
+        passwordSignupFields: 'USERNAME_ONLY',
+    });
+}

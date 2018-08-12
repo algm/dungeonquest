@@ -1,17 +1,25 @@
-import React, { Component } from "react";
-import { Container, Form, FormGroup, Label, Input, Button } from "reactstrap";
-import { Link, Redirect } from "react-router-dom";
-import { Rooms } from "../../api/Rooms";
-import uniqid from "uniqid";
+import React, { Component } from 'react';
+import {
+    Container,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    Button,
+    Alert,
+} from 'reactstrap';
+import { Link, Redirect } from 'react-router-dom';
+import { withTracker } from 'meteor/react-meteor-data';
 
 class NewGame extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            name: "",
+            name: '',
             submitting: false,
-            inserted: null
+            inserted: null,
+            error: null,
         };
     }
 
@@ -21,15 +29,26 @@ class NewGame extends Component {
         this.setState({ submitting: true });
         let { name } = this.state;
 
-        let inserted = await Rooms.insert({
-            name,
-            id: uniqid(),
-            users: [],
-            messages: [],
-            createdAt: new Date() // current time
-        });
+        try {
+            let inserted = await Meteor.callPromise('room.create', {
+                name,
+                userId: this.props.activeUser._id,
+            });
 
-        this.setState({ inserted });
+            if (!inserted) {
+                this.setState({
+                    error: 'A room with that name already exists!',
+                    inserted: null,
+                    submitting: false,
+                });
+
+                return;
+            }
+
+            this.setState({ inserted, error: null });
+        } catch (err) {
+            this.setState({ error: err, inserted: null, submitting: false });
+        }
     }
 
     onChange(e) {
@@ -40,9 +59,24 @@ class NewGame extends Component {
 
     render() {
         let redirect = null;
+        const { activeUser } = this.props;
+        let error = null;
 
         if (this.state.inserted) {
             redirect = <Redirect to={`/room/${this.state.inserted}`} />;
+        }
+
+        if (this.state.error) {
+            error = <Alert color="danger">{this.state.error}</Alert>;
+        }
+
+        if (!activeUser) {
+            return (
+                <Container>
+                    <h1>New game</h1>
+                    <p>Please login to create a room</p>
+                </Container>
+            );
         }
 
         return (
@@ -55,6 +89,7 @@ class NewGame extends Component {
                         onSubmit={this.handleSubmit.bind(this)}
                     >
                         <FormGroup>
+                            {error}
                             <Label for="roomName">Room name</Label>
                             <Input
                                 type="text"
@@ -63,6 +98,7 @@ class NewGame extends Component {
                                 placeholder="Room name"
                                 onChange={this.onChange.bind(this)}
                                 value={this.state.name}
+                                autoFocus
                             />
                         </FormGroup>
 
@@ -71,7 +107,7 @@ class NewGame extends Component {
                             className="mr-2"
                             onClick={this.handleSubmit.bind(this)}
                             disabled={
-                                this.state.name === "" || this.state.submitting
+                                this.state.name === '' || this.state.submitting
                             }
                         >
                             Create
@@ -87,4 +123,4 @@ class NewGame extends Component {
     }
 }
 
-export default NewGame;
+export default withTracker(() => ({ activeUser: Meteor.user() }))(NewGame);
