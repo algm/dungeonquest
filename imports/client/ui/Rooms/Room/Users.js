@@ -10,8 +10,6 @@ const Users = ({ roomUsers }) => (
 );
 
 export default withTracker(({ users }) => {
-    Meteor.subscribe('users');
-
     return {
         roomUsers: Meteor.users
             .find({

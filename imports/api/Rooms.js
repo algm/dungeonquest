@@ -1,5 +1,6 @@
 import { Mongo } from 'meteor/mongo';
 import uniqid from 'uniqid';
+import { createGame } from './Games';
 
 const Rooms = new Mongo.Collection('rooms');
 
@@ -23,10 +24,43 @@ Meteor.methods({
                 createdAt: new Date(),
                 id: uniqid(),
                 master: Meteor.user()._id,
+                gameId: null,
             });
         }
 
         return false;
+    },
+
+    async 'room.startGame'({ id }) {
+        new SimpleSchema({
+            id: { type: String },
+        }).validate({ id });
+
+        const room = await Rooms.findOne({ id });
+        let users = room.users || [];
+        let messages = room.messages || [];
+        let user = Meteor.user();
+
+        if (room.master != user._id) {
+            return false;
+        }
+
+        messages.push(setMessage(user, `Starting game...`));
+
+        Rooms.update(room._id, {
+            $set: { messages },
+        });
+
+        let gameId = createGame({
+            roomId: room.id,
+            users,
+        });
+
+        Rooms.update(room._id, {
+            $set: { gameId },
+        });
+
+        return gameId;
     },
 
     async 'room.join'({ id, userId }) {
@@ -47,7 +81,7 @@ Meteor.methods({
             );
 
             return Rooms.update(room._id, {
-                $set: { users, messages },
+                $set: { users: users.filter(item => !!item), messages },
             });
         }
     },
@@ -73,7 +107,7 @@ Meteor.methods({
             );
 
             Rooms.update(room._id, {
-                $set: { users, messages },
+                $set: { users: users.filter(item => !!item), messages },
             });
         }
     },

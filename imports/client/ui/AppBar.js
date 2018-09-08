@@ -32,19 +32,11 @@ export default class AppBar extends PureComponent {
     }
     render() {
         return (
-            <Navbar light expand="md">
+            <Navbar dark expand="md">
                 <Container>
                     <NavbarBrand tag={Link} to="/">
                         <img className="brand-logo" src="/img/logo.png" />
                     </NavbarBrand>
-                    <NavbarToggler onClick={this.toggle} />
-                    <Collapse isOpen={this.state.isOpen} navbar>
-                        <Nav className="ml-auto" navbar>
-                            <NavItem className="pt-1 pl-2">
-                                <AccountsUIWrapper />
-                            </NavItem>
-                        </Nav>
-                    </Collapse>
                 </Container>
             </Navbar>
         );

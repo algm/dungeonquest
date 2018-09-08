@@ -1,14 +1,25 @@
 import React from 'react';
-import { Container } from 'reactstrap';
+import { CardDeck, Container } from 'reactstrap';
 import RoomList from '../ui/Rooms/List';
+import UserInfo from '../ui/User/Info';
+import AppBar from '../ui/AppBar';
+import Foreground from '../ui/Foreground';
+import Background from '../ui/Background';
+import Page from '../ui/Page';
 
 const Home = () => (
-    <Container className="page-home">
-        <div className="logo text-center">
-            <img src="/img/logo.png" />
-        </div>
-        <RoomList />
-    </Container>
+    <Page className="page-home">
+        <Background />
+        <Foreground>
+            <Container>
+                <AppBar />
+                <CardDeck>
+                    <UserInfo />
+                    <RoomList />
+                </CardDeck>
+            </Container>
+        </Foreground>
+    </Page>
 );
 
 export default Home;

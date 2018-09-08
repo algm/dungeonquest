@@ -1,16 +1,10 @@
-import React, { Component } from "react";
-import AppBar from "../ui/AppBar";
+import React, { Component } from 'react';
 
 class Layout extends Component {
     render() {
         const { children } = this.props;
 
-        return (
-            <div className="viewport">
-                <AppBar />
-                {children}
-            </div>
-        );
+        return <div className="viewport">{children}</div>;
     }
 }
 

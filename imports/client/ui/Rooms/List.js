@@ -3,10 +3,18 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Rooms } from '../../../api/Rooms';
 import { Link } from 'react-router-dom';
+import {
+    Card,
+    CardText,
+    CardTitle,
+    CardBody,
+    CardHeader,
+    CardFooter,
+} from 'reactstrap';
 
 const RoomList = ({ rooms, activeUser }) => {
     let content = <div>No rooms available!</div>;
-    let newRoom = null;
+    let newRoom = <CardText>Login to create a game</CardText>;
 
     console.log(activeUser);
 
@@ -27,17 +35,19 @@ const RoomList = ({ rooms, activeUser }) => {
     }
 
     return (
-        <div className="page-section room-list">
-            <h1>Available games</h1>
-            {newRoom}
-            <div className="rooms-available">{content}</div>
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle tag="h2">Available games</CardTitle>
+            </CardHeader>
+            <CardBody tag="div">
+                <div className="rooms-available">{content}</div>
+            </CardBody>
+            <CardFooter>{newRoom}</CardFooter>
+        </Card>
     );
 };
 
 export default withTracker(() => {
-    Meteor.subscribe('rooms');
-
     return {
         rooms: Rooms.find({}).fetch(),
         activeUser: Meteor.user(),

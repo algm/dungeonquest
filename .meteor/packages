@@ -26,3 +26,6 @@ session@1.1.7
 aldeed:simple-schema
 aldeed:schema-index
 deanius:promise
+gadicc:blaze-react-component
+meteoreact:accounts
+meteoreact:accounts-unstyled

@@ -85,7 +85,5 @@ class MessageBox extends Component {
     }
 }
 export default withTracker(() => {
-    Meteor.subscribe('rooms');
-
     return {};
 })(MessageBox);

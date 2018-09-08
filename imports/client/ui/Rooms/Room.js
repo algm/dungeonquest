@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Rooms } from '../../../api/Rooms';
-import { Button } from 'reactstrap';
-import Users from './Room/Users';
 import { Meteor } from 'meteor/meteor';
+import { Rooms } from '../../../api/Rooms';
+import { Games } from '../../../api/Games';
+import { Redirect } from 'react-router-dom';
+import Users from './Room/Users';
 import Messages from './Room/Messages';
+import Foreground from '../Foreground';
+import Background from '../Background';
+import Page from '../Page';
+import AppBar from '../AppBar';
+import {
+    Container,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    Button,
+    Alert,
+    Card,
+    CardText,
+    CardTitle,
+    CardDeck,
+    CardBody,
+    CardHeader,
+    CardFooter,
+} from 'reactstrap';
 
 class Room extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { starting: false };
+    }
+
     componentDidMount() {
         this.joined = false;
 
@@ -21,12 +48,20 @@ class Room extends Component {
         }
     }
 
-    componentWillUnmount() {
-        this.leaveRoom();
+    async componentWillUnmount() {
+        await this.leaveRoom();
     }
 
     async startGame() {
-        alert('starts!');
+        let started = await Meteor.callPromise('room.startGame', {
+            id: this.props.room.id,
+        });
+
+        if (started) {
+            this.setState({
+                starting: true,
+            });
+        }
     }
 
     async joinRoom() {
@@ -68,44 +103,62 @@ class Room extends Component {
             );
         }
 
-        console.log(
-            activeUser._id === room.master,
-            activeUser._id,
-            room.master,
-            room.users.length
-        );
-
         if (room.users.length > 1 && activeUser._id === room.master) {
             start = (
-                <Button onClick={this.startGame.bind(this)} color="primary">
-                    Start game!
-                </Button>
+                <CardFooter>
+                    <Button
+                        onClick={this.startGame.bind(this)}
+                        disabled={this.state.starting}
+                        color="primary"
+                    >
+                        Start game!
+                    </Button>
+                </CardFooter>
             );
         }
 
+        if (room.gameId) {
+            return <Redirect to={`/game/${room.gameId}`} />;
+        }
+
         return (
-            <div className="page room-page">
-                <div className="title">
-                    <h1>
-                        {room.name} {start}
-                    </h1>
-                </div>
-                <Messages
-                    messages={room.messages}
-                    roomId={room.id}
-                    activeUser={activeUser}
-                />
-                <Users users={room.users} />
-            </div>
+            <Page className="room-page">
+                <Background />
+                <Foreground>
+                    <AppBar />
+                    <CardDeck>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{room.name}</CardTitle>
+                            </CardHeader>
+                            <CardBody>
+                                <Users users={room.users} />
+                            </CardBody>
+                            {start}
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Chat</CardTitle>
+                            </CardHeader>
+                            <CardBody>
+                                <Messages
+                                    messages={room.messages}
+                                    roomId={room.id}
+                                    activeUser={activeUser}
+                                />
+                            </CardBody>
+                        </Card>
+                    </CardDeck>
+                </Foreground>
+            </Page>
         );
     }
 }
 
 export default withTracker(({ id }) => {
-    Meteor.subscribe('rooms');
-
     return {
         activeUser: Meteor.user(),
         room: Rooms.findOne({ id }),
+        game: Games.findOne({ roomId: id }),
     };
 })(Room);
